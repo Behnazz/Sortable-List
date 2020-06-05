@@ -18,15 +18,33 @@ const listItems = [];
 
 let dragStartIndex;
 
+
+const addEventListeners = () => {
+  const draggables = document.querySelectorAll('.draggable');
+  const dragListItems = document.querySelectorAll('.draggable-list li');
+
+  draggables.forEach(draggable => {
+    draggable.addEventListener('dragstart', dragStart);
+  });
+
+  dragListItems.forEach(item => {
+    item.addEventListener('dragover', dragOver);
+    item.addEventListener('drop', dragDrop);
+    item.addEventListener('dragenter', dragEnter);
+    item.addEventListener('dragleave', dragLeave);
+  });
+}
+
+
 function dragStart() {
-  // dragStartIndex = +this.closest('li').getAttribute('data-index');
+  dragStartIndex = +this.closest('li').getAttribute('data-index');
 }
 
 function dragEnter() {
   this.classList.add('over');
 }
 
-function dragLeave(){
+function dragLeave() {
   this.classList.remove('over');
 }
 function dragOver(e) {
@@ -42,41 +60,25 @@ function dragDrop() {
 
 //swap list items that are drag and drop
 const swapItems = (fromIndex, toIndex) => {
-  const item1 = listItems[fromIndex].querySelector('.draggable');
-  const item2 = listItems[toIndex].querySelector('.draggable');
-  listItems[toIndex].appendChild(item1)
-  listItems[fromIndex].appendChild(item2)
+  const itemOne = listItems[fromIndex].querySelector('.draggable');
+  const itemTwo = listItems[toIndex].querySelector('.draggable');
 
-
-}
-
-const addEventListeners = () => {
-  const draggables = document.querySelectorAll('.draggable');
-  const dragListItems = document.querySelectorAll('.draggable');
-
-  draggables.forEach(draggable => {
-    draggable.addEventListener('dragstart', dragStart);
-  });
-
-  dragListItems.forEach(item => {
-    item.addEventListener('dragover', dragOver);
-    item.addEventListener('drop', dragDrop);
-    item.addEventListener('dragenter', dragEnter);
-    item.addEventListener('dragleave', dragLeave);
-  });
+  listItems[fromIndex].appendChild(itemTwo);
+  listItems[toIndex].appendChild(itemOne);
 }
 
 //check the order of list items 
-const checkOrder = () => {
-  listItems.forEach((listItem,index) => {
+function checkOrder() {
+  listItems.forEach((listItem, index) => {
     const personName = listItem.querySelector('.draggable').innerText.trim();
+
     if (personName !== richestPeople[index]) {
-      listItem.classList.add('wrong')
+      listItem.classList.add('wrong');
     } else {
       listItem.classList.remove('wrong');
       listItem.classList.add('right');
     }
-  })
+  });
 }
 
 
@@ -101,9 +103,9 @@ const createList = () => {
     });
 
   addEventListeners();
+
 }
 //check button event listener 
 check.addEventListener('click', checkOrder);
 
 createList();
-
