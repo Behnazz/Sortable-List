@@ -18,30 +18,41 @@ const listItems = [];
 
 let dragStartIndex;
 
-const dragStart = () => {
-  // console.log('event:', 'dragstart')
+function dragStart() {
+  // dragStartIndex = +this.closest('li').getAttribute('data-index');
 }
 
 function dragEnter() {
-  console.log(this)
   this.classList.add('over');
 }
 
-const dragLeave= () =>{
-  console.log(this)
-  return this.classList.remove('over')
+function dragLeave(){
+  this.classList.remove('over');
 }
-const dragOver = () => {
-  // console.log('event:', 'dragover')
+function dragOver(e) {
+  e.preventDefault();
 }
 
-const dragDrop = () => {
-  // console.log('event:', 'drop')
+function dragDrop() {
+  const dragEndIndex = +this.getAttribute('data-index');
+  swapItems(dragStartIndex, dragEndIndex);
+
+  this.classList.remove('over');
+}
+
+//swap list items that are drag and drop
+const swapItems = (fromIndex, toIndex) => {
+  const item1 = listItems[fromIndex].querySelector('.draggable');
+  const item2 = listItems[toIndex].querySelector('.draggable');
+  listItems[toIndex].appendChild(item1)
+  listItems[fromIndex].appendChild(item2)
+
+
 }
 
 const addEventListeners = () => {
   const draggables = document.querySelectorAll('.draggable');
-  const dragListItems = document.querySelectorAll('.draggable-list li');
+  const dragListItems = document.querySelectorAll('.draggable');
 
   draggables.forEach(draggable => {
     draggable.addEventListener('dragstart', dragStart);
@@ -55,8 +66,18 @@ const addEventListeners = () => {
   });
 }
 
-
-
+//check the order of list items 
+const checkOrder = () => {
+  listItems.forEach((listItem,index) => {
+    const personName = listItem.querySelector('.draggable').innerText.trim();
+    if (personName !== richestPeople[index]) {
+      listItem.classList.add('wrong')
+    } else {
+      listItem.classList.remove('wrong');
+      listItem.classList.add('right');
+    }
+  })
+}
 
 
 //insert list items into DOM
@@ -81,5 +102,8 @@ const createList = () => {
 
   addEventListeners();
 }
+//check button event listener 
+check.addEventListener('click', checkOrder);
+
 createList();
 
